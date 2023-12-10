@@ -173,7 +173,7 @@
       };
 
       let urlParams = new URLSearchParams(window.location.search);
-        var repl = JSON.parse(urlParams.get('repl'));
+        var repl = JSON.parse(urlParams.get('repl')) || true;
 
         class LazyIterable extends Array {
         constructor(arr) {
@@ -406,6 +406,11 @@
       <a href="https://gitHub.com/squint-cljs/squint"><img src="https://img.shields.io/github/stars/squint-cljs/squint.svg?style=social&label=Star"></a></div>
       <div id="editor" style="max-height: 90dvh; overflow: auto; width: 50%; border: 1px solid grey; border-radius: 10px; margin-bottom: 10px;">
       </div>
+      <div style="padding: 1em; color: white;">
+        In REPL-mode you can evaluate individual expression by using the ⌘ (macOS) or Windows key + Enter. The result will appear below.
+          <pre><code style="white-space: pre-wrap; max-width:80%; color: white; background-color: rgba(0, 0, 0, 0.2);" id="result"></code>
+        </pre>
+      </div>
       <div style="display:none; width: 50%; max-height: 90dvh; overflow: auto; border: 1px solid grey; border-radius: 10px; margin-left: 10px; padding: 10px; margin-bottom: 10px;">
               <button onClick="compile()">
         Compile!
@@ -423,7 +428,7 @@
               </label>
               <br>
               In REPL-mode you can evaluate individual expression by using the ⌘ (macOS) or Windows key + Enter. The result will appear below.
-              <pre><code style="white-space: pre-wrap;max-width:80%;" id="result"></code>
+              <pre><code style="white-space: pre-wrap;max-width:80%;" id="result0"></code>
               </pre>
               Compiled code:
               <pre><code style="white-space: pre-wrap;max-width:80%;" id="compiledCode"></code>

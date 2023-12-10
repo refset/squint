@@ -173,13 +173,13 @@
       };
 
       let urlParams = new URLSearchParams(window.location.search);
-        var repl = JSON.parse(urlParams.get('repl')) || true;
+      var repl = JSON.parse(urlParams.get('repl')) !== false;
 
-        class LazyIterable extends Array {
+      class LazyIterable extends Array {
         constructor(arr) {
-        super(arr);
+          super(arr);
         }
-        }
+      }
 
       let compilerState = null;
       let evalCode = async (code) => {

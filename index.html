@@ -22,6 +22,7 @@
           "@codemirror/language": "https://ga.jspm.io/npm:@codemirror/language@6.9.2/dist/index.js",
           "@codemirror/state": "https://ga.jspm.io/npm:@codemirror/state@6.3.1/dist/index.js",
           "@codemirror/view": "https://ga.jspm.io/npm:@codemirror/view@6.21.4/dist/index.js",
+          "@lezer/highlight": "https://ga.jspm.io/npm:@lezer/highlight@1.1.6/dist/index.js",
           "@nextjournal/clojure-mode": "https://ga.jspm.io/npm:@nextjournal/clojure-mode@0.3.0/dist/nextjournal/clojure_mode.mjs",
           "@nextjournal/clojure-mode/extensions/eval-region": "https://ga.jspm.io/npm:@nextjournal/clojure-mode@0.3.0/dist/nextjournal/clojure_mode/extensions/eval_region.mjs",
           "react": "https://esm.sh/react@18.2.0",
@@ -33,7 +34,6 @@
           "https://ga.jspm.io/": {
             "@codemirror/commands": "https://ga.jspm.io/npm:@codemirror/commands@6.3.0/dist/index.js",
             "@lezer/common": "https://ga.jspm.io/npm:@lezer/common@1.1.0/dist/index.js",
-            "@lezer/highlight": "https://ga.jspm.io/npm:@lezer/highlight@1.1.6/dist/index.js",
             "@lezer/lr": "https://ga.jspm.io/npm:@lezer/lr@1.3.13/dist/index.js",
             "@lezer/markdown": "https://ga.jspm.io/npm:@lezer/markdown@1.1.0/dist/index.js",
             "@nextjournal/lezer-clojure": "https://ga.jspm.io/npm:@nextjournal/lezer-clojure@1.0.0/dist/index.es.js",
@@ -51,6 +51,12 @@
 
       body {
         max-width: inherit;
+        background-image: url('/john_mccarthy.jpeg'); /* Set the background image */
+        background-size: cover; /* Cover the entire page */
+        background-repeat: no-repeat; /* Do not repeat the image */
+        background-position: center; /* Center the image on the page */
+        height: 100vh;
+        margin: 0;
       }
     </style>
 
@@ -59,10 +65,75 @@
       import * as eval_region from '@nextjournal/clojure-mode/extensions/eval-region';
       import { EditorView, drawSelection, keymap } from '@codemirror/view';
       import { EditorState } from '@codemirror/state';
-      import { syntaxHighlighting, defaultHighlightStyle, foldGutter } from '@codemirror/language';
+      import { tags } from '@lezer/highlight';
+      import { syntaxHighlighting, HighlightStyle, defaultHighlightStyle, foldGutter } from '@codemirror/language';
       let url = new URL(window.location.href);
 
       let theme = EditorView.theme({
+        '&': {
+          color: '#ffbf00', // More amber text color
+          backgroundColor: '#000', // Black background
+          fontFamily: '\'Fira Code\', monospace', // Monospace font for the CRT feel
+          fontSize: '16px',
+          lineHeight: '1.6',
+          backgroundImage: 'linear-gradient(rgba(255, 191, 0, 0.1) 50%, transparent 50%)',
+          backgroundSize: '100% 0.2em', // Finer scanlines size
+          textShadow: '0 0 5px rgba(255, 191, 0, 0.75)', // More amber glow
+        },
+
+        '.cm-content': {
+          padding: '10px 4px',
+          whiteSpace: 'pre-wrap',
+        },
+
+        '&.cm-focused': {
+          outline: '0 !important',
+        },
+
+        '.cm-line': {
+          padding: '0 4px',
+        },
+
+        '.cm-matchingBracket': {
+          backgroundColor: '#604000', // Darker shade for matching brackets
+          color: 'inherit',
+        },
+
+        '.cm-gutters': {
+          backgroundColor: '#000', // Black background for gutters
+          color: '#ffbf00', // More amber text color for line numbers
+          border: 'none',
+        },
+
+        '.cm-gutterElement': {
+          marginLeft: '5px',
+        },
+
+        '.cm-foldPlaceholder': {
+          backgroundColor: 'black',
+        },
+
+        '.cm-cursor': {
+          borderLeft: '1px solid #ffbf00', // More amber cursor
+          visibility: 'hidden',
+        },
+
+        '&.cm-focused .cm-cursor': {
+          visibility: 'visible',
+        }
+      });
+
+      const myHighlightStyle = HighlightStyle.define([
+        { tag: tags.keyword, color: "#f28000" },
+        { tag: tags.atom, color: "#ff4500" },
+        { tag: tags.number, color: "#ff6347" },
+        { tag: tags.string, color: "#ffa07a" }, // Example for strings
+        { tag: tags.variableName, color: "#f08080" }, // Example for variables
+        { tag: tags.typeName, color: "#f08080" }, // Example for types
+        // ... Add more tags as needed
+      ]);
+
+      let theme0 = EditorView.theme({
         '.cm-content': {
           whitespace: 'pre-wrap',
           passing: '10px 0',
@@ -181,7 +252,7 @@
       let extensions = [
         theme,
         foldGutter(),
-        syntaxHighlighting(defaultHighlightStyle),
+        syntaxHighlighting(myHighlightStyle),
         drawSelection(),
         keymap.of(complete_keymap),
         squintExtension({ modifier: modifier }),
@@ -330,12 +401,12 @@
   </head>
 
   <body>
-    <div style="display: flex; flex-direction: row; max-height: 90dvh; overflow: auto;">
+      <div style="padding-top:1em; display: flex; flex-direction: row; max-height: 90dvh; overflow: auto;">
       <div style="position: absolute; right: 0px; top: 0px; margin: 2px">
       <a href="https://gitHub.com/squint-cljs/squint"><img src="https://img.shields.io/github/stars/squint-cljs/squint.svg?style=social&label=Star"></a></div>
       <div id="editor" style="max-height: 90dvh; overflow: auto; width: 50%; border: 1px solid grey; border-radius: 10px; margin-bottom: 10px;">
       </div>
-      <div style="width: 50%; max-height: 90dvh; overflow: auto; border: 1px solid grey; border-radius: 10px; margin-left: 10px; padding: 10px; margin-bottom: 10px;">
+      <div style="display:none; width: 50%; max-height: 90dvh; overflow: auto; border: 1px solid grey; border-radius: 10px; margin-left: 10px; padding: 10px; margin-bottom: 10px;">
               <button onClick="compile()">
         Compile!
               </button>
